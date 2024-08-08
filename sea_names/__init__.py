@@ -2,7 +2,7 @@
 
 __author__ = """Luke Campbell"""
 __email__ = "luke@axds.co"
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 from .geo import (
     get_region_polygons,
