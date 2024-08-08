@@ -21,4 +21,4 @@ def test_get_sea_names_for_great_white_shark_data(great_white_shark_data):
     lon = great_white_shark_data["lon"]
     lat = great_white_shark_data["lat"]
     regions = get_sea_names_for_trajectory(lon, lat, chunk_size=len(lon))
-    assert regions == ["Arctic Ocean", "Beaufort Sea", "Bering Sea", "Chuckchi Sea"]
+    assert regions == ["Arctic Ocean", "Beaufort Sea", "Bering Sea", "Chukchi Sea"]
