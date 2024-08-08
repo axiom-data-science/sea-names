@@ -7,7 +7,7 @@ sea-names
 
 Determine the sea-name of any arbitrary point or shapely geometry.
 
-Copyright 2023 Axiom Data Science, LLC
+Copyright 2023-2024 Axiom Data Science, LLC
 
 See LICENSE for details.
 
@@ -36,6 +36,18 @@ This project relies on conda for installation and managing of the project depend
       conda activate sea-names
       pip install -e .
 
+
+Shapefiles and Dataset Usage
+----------------------------
+
+Currently we've been asked to remove the repository of shapefiles used by this library for licensing
+reasons. The library will remain publicly accessible but the dataset underlying the library is no
+longer available for public distribution.
+
+We are trying to adopt the library to use either an open-source dataset or find alternatives for our
+users, we apologize for the inconvenience.
+
+
 Running Tests
 -------------
 
@@ -45,6 +57,45 @@ To run the project's tests::
 
 Usage
 -----
+
+The package can provide the region name for any given coordinate pair (Longitude, and Latitude).
+
+.. code-block:: python
+
+   import sea_names
+
+   lon = -81.65
+   lat = 41.98
+
+   name = sea_names.get_sea_name((lon, lat))
+   assert name == "Lake Erie"
+
+
+The package also has the ability to provide a set of sea names for a series of points. This
+capability is still somewhat experimental and can use a lot of memory.
+
+.. code-block:: python
+
+   from sea_names.geo import get_sea_names_for_trajectory
+   lons = [
+      -176.54,
+      -164.70,
+      -143.13,
+      -126.09,
+      -107.18,
+      -91.36,
+   ]
+   lats = [
+      55.64,
+      48.74,
+      56.57,
+      45.58,
+      21.39,
+      25.15,
+   ]
+   region_names = get_sea_names_for_trajectory(lons, lats, chunk_size=len(lons))
+   assert region_names == ['Bering Sea', 'Gulf of Mexico', 'North Pacific Ocean']
+
 
 
 Configuration

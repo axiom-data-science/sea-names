@@ -1,5 +1,6 @@
 """Module to download available sea name polygons to local system."""
 import hashlib
+import os
 import shutil
 import sys
 import tarfile
@@ -13,8 +14,10 @@ import requests
 from sea_names.log import logger, setup_logging
 
 
-URL = "https://files.axds.co/sea_names.tar.gz"
-FILE_HASH = "723b4d16b02cb5c555ffb1f9d3324edecd2b9dadd55af17e1549232006054cd4"
+FILE_HASH = "4ad163a9b792ee5aa02def7c32722e322638582e098c35e08134fa4db4452c8f"
+if "SEA_NAMES_FILE_HASH" in os.environ:
+    FILE_HASH = os.environ["SEA_NAMES_FILE_HASH"]
+
 CACHE_PATH = Path(appdirs.user_cache_dir("sea-names", "co.axiomdatascience"))
 CACHE_FILE = CACHE_PATH / "sea_names.tar.gz"
 CACHE_BOUNDS_FILE = CACHE_PATH / "sea_names/sea_names.box"
@@ -29,8 +32,15 @@ def extract_region_bounds():
 def download_sea_names():
     """Download the latest sea_names cache."""
     CACHE_PATH.mkdir(parents=True, exist_ok=True)
-    logger.info(f"Downloading cache from {URL}")
-    with requests.get(URL, stream=True) as r:
+    if "SEA_NAMES_BUILD_TOKEN" not in os.environ:
+        raise ValueError(
+            "The sea-names polygons dataset has been removed from public distribution."
+        )
+
+    build_token = os.environ["SEA_NAMES_BUILD_TOKEN"]
+    url = f"https://files.axds.co/packages/{build_token}/sea_names.tar.gz"
+    logger.info(f"Downloading cache from {url}")
+    with requests.get(url, stream=True) as r:
         with open(CACHE_FILE, "wb") as f:
             shutil.copyfileobj(r.raw, f)
     shasum = sha256sum(CACHE_FILE)
