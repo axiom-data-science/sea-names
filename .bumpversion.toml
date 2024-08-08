@@ -1,0 +1,12 @@
+[tool.bumpversion]
+current_version = "0.2.0"
+search = "{current_version}"
+replace = "{new_version}"
+commit = false
+tag = false
+
+[[tool.bumpversion.files]]
+filename = "setup.py"
+
+[[tool.bumpversion.files]]
+filename = "sea_names/__init__.py"

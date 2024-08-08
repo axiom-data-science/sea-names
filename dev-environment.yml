@@ -10,7 +10,7 @@ dependencies:
   - types-setuptools
   - mypy
   - black
-  - bump2version
+  - bump-my-version
   - pip
   - pip:
     - build
