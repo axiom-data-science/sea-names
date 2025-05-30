@@ -2,6 +2,11 @@
 History
 =======
 
+0.4.0 (2025-05-29)
+------------------
+* Fixes to accommodate issues with sea bounding boxes with more than one
+  polygon.
+
 0.3.0 (2024-08-08)
 ------------------
 * Updated README with usage examples

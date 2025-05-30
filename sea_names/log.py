@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """Logging configuration."""
+import importlib.resources
 import logging
 import logging.config
-
-import pkg_resources
 
 
 logger = logging.getLogger("sea-names")
@@ -11,5 +10,6 @@ logger = logging.getLogger("sea-names")
 
 def setup_logging():
     """Initializes the project logging."""
-    logging_conf_pth = pkg_resources.resource_filename("sea_names", "logging.conf")
-    logging.config.fileConfig(logging_conf_pth)
+    ref = importlib.resources.files("sea_names") / "logging.conf"
+    with importlib.resources.as_file(ref) as path:
+        logging.config.fileConfig(path)
