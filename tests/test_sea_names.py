@@ -55,6 +55,19 @@ def test_sea_name():
         "St. Lawrence River": [
             (-69.83, 47.68),
         ],
+        # Three seas/regions with multiple bounding boxes with the same name
+        "Bering Sea": [
+            (166.857310, 58.484235),
+            (-164.962849, 56.979633),
+        ],
+        "South Pacific Ocean": [
+            (177.573269, -27.738784),
+            (-153.422827, -28.822356),
+        ],
+        "North Pacific Ocean": [
+            (174.584988, 24.149949),
+            (-173.813451, 19.252229),
+        ],
     }
     for sea_name, points in test_cases.items():
         for point in points:

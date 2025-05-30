@@ -3,7 +3,7 @@ from typing import List
 
 import numpy as np
 
-from shapely.geometry import Point
+from shapely.geometry import MultiPolygon, Point
 
 
 def evaluate_possible_regions(
@@ -13,7 +13,9 @@ def evaluate_possible_regions(
     names = list(sea_bounds.keys())
     # all_bounds is a 2D array of shape (N, 4) where N is the number of regions.
     # all_bounds[i] = [min_x(i), min_y(i), max_x(i), max_y(i)]
-    all_bounds = np.array([i.bounds for i in sea_bounds.values()])
+    all_bounds = np.array(
+        [MultiPolygon(pgon_list).bounds for pgon_list in sea_bounds.values()]
+    )
     # LONS is a 2D array of shape (len(all_bounds), len(lons)) where LONS[i, j] = lon[j]
     # LATS is a 2D array of shape (len(all_bounds), len(lats)) where LATS[i, j] = lat[j]
     LONS, _ = np.meshgrid(lon, np.ones(len(all_bounds)))

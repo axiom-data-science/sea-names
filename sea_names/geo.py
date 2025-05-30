@@ -3,6 +3,7 @@
 import re
 import tarfile
 
+from collections import defaultdict
 from functools import lru_cache
 from typing import Dict, List, Optional, Tuple
 
@@ -16,7 +17,7 @@ from sea_names.processing import evaluate_polygon_brute_force, evaluate_possible
 
 
 @lru_cache
-def get_sea_bounds() -> Dict[str, Polygon]:
+def get_sea_bounds() -> Dict[str, List[Polygon]]:
     """Return a mapping of the sea name to the bounding polygon."""
     if not (CACHE_BOUNDS_FILE.exists() and CACHE_FILE.exists()):
         download_sea_names()
@@ -25,7 +26,8 @@ def get_sea_bounds() -> Dict[str, Polygon]:
 
     with open(CACHE_BOUNDS_FILE, "r") as f:
         points: List[Tuple[float, float]] = []
-        polygons: Dict[str, Polygon] = {}
+        # Using defaultdict to auto-insert empty list for region polygion
+        polygons: Dict[str, List[Polygon]] = defaultdict(list)
 
         for line_no, line in enumerate(f.readlines()):
             line = line.strip()  # strip newline
@@ -34,8 +36,7 @@ def get_sea_bounds() -> Dict[str, Polygon]:
                 continue
             if line.startswith("> "):
                 if name and line_no > 0:
-                    polygon = Polygon(points)
-                    polygons[name] = polygon
+                    polygons[name].append(Polygon(points))
                 # Name marker
                 name = line[2:]
                 points = []
@@ -44,8 +45,7 @@ def get_sea_bounds() -> Dict[str, Polygon]:
                 x, y = [float(i) for i in line.split(" ")]
                 points.append((x, y))
         if name:
-            polygon = Polygon(points)
-            polygons[name] = polygon
+            polygons[name].append(Polygon(points))
 
     return polygons
 
@@ -101,12 +101,13 @@ def get_sea_name(*args) -> Optional[str]:
     else:
         raise ValueError("Unable to determine point from function arguments.")
 
-    polygons = get_sea_bounds()
-    for name, bounds in polygons.items():
-        if bounds.contains(point):
-            for polygon in get_region_polygons(name):
-                if polygon.contains(point):
-                    return clean_name(name)
+    sea_bound_polygons = get_sea_bounds()
+    for name, sb_polygons in sea_bound_polygons.items():
+        for sb_bounds in sb_polygons:
+            if sb_bounds.contains(point):
+                for polygon in get_region_polygons(name):
+                    if polygon.contains(point):
+                        return clean_name(name)
     return None
 
 
